@@ -1,6 +1,6 @@
 <h1>Fuzz</h1>
 
-Fuzz is a tool to create and manipulate fuzzy sets in JavaScript.
+Fuzz is a tool to create and manipulate fuzzy sets in JavaScript. Code is hosted [here](https://gitlab.com/nargarawr/fuzz).
 
 <h2>How to use</h2>
 
