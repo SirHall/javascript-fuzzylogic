@@ -1,6 +1,6 @@
 {
   "name": "javascript-fuzzylogic",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A library that allows for manipulation of fuzzy sets in JavaScript",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
