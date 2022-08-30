@@ -77,7 +77,7 @@ f1.generateMembershipValues({
 
 The above code would create a fuzzy set that would look like:
 
-![Alt text](images/triangularMf.png 'Triangular membership function (plotted)')
+![Alt text](https://i.ibb.co/mJV98ZM/triangular-Mf.png 'Triangular membership function (plotted)')
 
 <h3>Trapzoidal</h3>
 Generates a trapezoidal shape. All values because `bottomLeft` are zero, `topLeft` to `topRight` is one, and all values after `bottomRight` are zero
@@ -98,7 +98,7 @@ f1.generateMembershipValues({
 })
 ```
 
-![Alt text](images/trapezoidalMf.png 'Trapezoidal membership function (plotted)')
+![Alt text](https://i.ibb.co/XtW7LCs/trapezoidal-Mf.png 'Trapezoidal membership function (plotted)')
 
 <h3>Gaussian</h3>
 Generate a bell curve centered around `center`, with height `height`, and width based on `standardDeviation`
@@ -117,7 +117,7 @@ f1.generateMembershipValues({
 })
 ```
 
-![Alt text](images/gaussianMf.png 'Gaussian membership function (plotted)')
+![Alt text](https://i.ibb.co/NTGVMg1/gaussian-Mf.png 'Gaussian membership function (plotted)')
 
 <h3>Sigmoidal</h3>
 Generate a curve with degree of slope, `slope`, center `half point`
@@ -136,7 +136,7 @@ f1.generateMembershipValues({
 })
 ```
 
-![Alt text](images/sigmoidalMf.png 'Sigmoidal membership function (plotted)')
+![Alt text](https://i.ibb.co/NpFvnPy/sigmoidal-Mf.png 'Sigmoidal membership function (plotted)')
 
 <h2>Fuzzy operators</h2>
 
