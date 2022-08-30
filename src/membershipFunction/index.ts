@@ -6,4 +6,5 @@ export {
   TrapezoidalMembershipFunctionParams,
   BaseMembershipFunctionParameters,
   MembershipFunctionParameters,
+  GenericMembershipFunctionParameters,
 } from './types';

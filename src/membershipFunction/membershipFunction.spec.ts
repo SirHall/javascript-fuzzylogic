@@ -79,7 +79,7 @@ describe('generateMembershipValues', () => {
           maxValue: 100,
           step: 10,
         },
-      })
+      }).values
     ).toStrictEqual(result);
   });
 
@@ -156,7 +156,7 @@ describe('generateMembershipValues', () => {
           maxValue: 100,
           step: 10,
         },
-      })
+      }).values
     ).toStrictEqual(result);
   });
 
@@ -229,7 +229,7 @@ describe('generateMembershipValues', () => {
           maxValue: 100,
           step: 10,
         },
-      })
+      }).values
     ).toStrictEqual(result);
   });
 
@@ -342,7 +342,7 @@ describe('generateMembershipValues', () => {
           maxValue: 10,
           step: 1,
         },
-      })
+      }).values
     ).toStrictEqual(result);
   });
 });

@@ -34,6 +34,12 @@ export interface BaseMembershipFunctionParameters {
   step: number;
 }
 
+export type GenericMembershipFunctionParameters =
+  | TriangularMembershipFunctionParams
+  | TrapezoidalMembershipFunctionParams
+  | GaussianMembershipFunctionParams
+  | SigmoidalMembershipFunctionParams;
+
 export type MembershipFunctionParameters = {
   [MembershipFunctionType.Triangular]: TriangularMembershipFunctionParams;
   [MembershipFunctionType.Trapezoidal]: TrapezoidalMembershipFunctionParams;

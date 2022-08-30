@@ -1,0 +1,1 @@
+export { FuzzyInferenceSystem } from './FuzzyInferenceSystem';

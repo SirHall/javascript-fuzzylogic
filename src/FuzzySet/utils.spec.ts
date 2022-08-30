@@ -10,7 +10,7 @@ import {
   union,
 } from './index';
 import { indexByXValue } from './utils';
-import { getPlottableValues } from '..';
+import { MembershipFunctionType, TriangularMembershipFunctionParams, getPlottableValues } from '..';
 
 const values: FuzzyValue[] = [
   { membership: 0.0, value: 1 },
@@ -24,6 +24,29 @@ const values: FuzzyValue[] = [
 const setWithValues = new FuzzySet('setWithValues', values);
 const setWithNoValues = new FuzzySet('setWithNoValues', []);
 const normalisedSet = new FuzzySet('normalisedSet', [...values, { membership: 1, value: 8 }]);
+
+describe('FuzzySet', () => {
+  it('should store initialisation parameters if a membership function is used', () => {
+    const f1 = new FuzzySet('Fuzzy set');
+    expect(f1.initialisationParameters).toBe(undefined);
+    expect(f1.membershipFunctionType).toBe(undefined);
+
+    const initParams = {
+      type: MembershipFunctionType.Triangular,
+      parameters: {
+        left: 0,
+        center: 5,
+        right: 10,
+        minValue: 0,
+        maxValue: 10,
+        step: 1,
+      },
+    };
+    f1.generateMembershipValues(initParams);
+    expect(f1.initialisationParameters).toStrictEqual(initParams.parameters);
+    expect(f1.membershipFunctionType).toBe(initParams.type);
+  });
+});
 
 describe('alphacut', () => {
   it('should return empty array if the fuzzy set has no values', () => {

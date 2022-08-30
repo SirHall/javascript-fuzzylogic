@@ -1,7 +1,9 @@
 import { DefuzzicationType, defuzzify } from '../defuzzify';
 import {
+  GenericMembershipFunctionParameters,
   MembershipFunction,
   MembershipFunctionParameters,
+  MembershipFunctionType,
   generateMembershipValues,
 } from '../membershipFunction';
 import {
@@ -19,6 +21,8 @@ import {
 export class FuzzySet {
   readonly name: string;
   values: FuzzyValue[];
+  initialisationParameters?: GenericMembershipFunctionParameters;
+  membershipFunctionType?: MembershipFunctionType;
 
   constructor(name: string, initialValues: FuzzyValue[] = []) {
     this.name = name;
@@ -41,7 +45,9 @@ export class FuzzySet {
 
   generateMembershipValues<T extends keyof MembershipFunctionParameters>(mf: MembershipFunction<T>) {
     this.values = generateMembershipValues<T>(mf);
-    return this.values;
+    this.membershipFunctionType = mf.type;
+    this.initialisationParameters = mf.parameters;
+    return this;
   }
 
   defuzzify = (type: DefuzzicationType): number => defuzzify(type, this.values);
