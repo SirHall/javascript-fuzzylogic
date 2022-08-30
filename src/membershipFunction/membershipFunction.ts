@@ -72,7 +72,7 @@ export const trapezoidalMembershipFunction = (
 };
 
 /*
- * Generate a bell curve centered around `center`, with height `height`, and
+ * Generate a bell curve centered around `center`, and
  * width based on `standardDeviation`
  */
 export const gaussianMembershipFunction = (
