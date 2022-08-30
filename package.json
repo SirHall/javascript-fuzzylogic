@@ -1,5 +1,5 @@
 {
-  "name": "@craigknott/fuzzyjs",
+  "name": "javascript-fuzzylogic",
   "version": "0.0.1",
   "description": "A library that allows for manipulation of fuzzy sets in JavaScript",
   "main": "lib/index.js",
