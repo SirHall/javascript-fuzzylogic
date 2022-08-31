@@ -1,3 +1,4 @@
+import { DefuzzicationType } from '../defuzzify';
 import { LinguisticVariable } from '../index';
 import { LinguisticRule, LinguisticRuleOperator } from '../LinguisticRule';
 import { mamdaniInference } from './utils';
@@ -96,7 +97,7 @@ export class FuzzyInferenceSystem {
     }
   };
 
-  solve = (type: 'Mamdani', args: Record<string, number>): number => {
+  solve = (type: 'Mamdani', args: Record<string, number>, defuzzicationMethod: DefuzzicationType): number => {
     const allInputsHaveArg = this.inputs.every((input) => args[input.name] !== undefined);
     if (!allInputsHaveArg) {
       throw new Error('Not all input variables have an argument provided');
@@ -115,8 +116,8 @@ export class FuzzyInferenceSystem {
     }
 
     if (type === 'Mamdani') {
-      return mamdaniInference(this.inputs, this.outputs, this.rules, args);
+      return mamdaniInference(this.inputs, this.outputs, this.rules, args, defuzzicationMethod);
     }
-    return 0;
+    throw new Error('Unknown defuzzification method specified');
   };
 }

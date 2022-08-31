@@ -1,3 +1,5 @@
+import { DefuzzicationType, defuzzify } from '../defuzzify';
+import { FuzzySet, FuzzyValue } from '../FuzzySet';
 import { LinguisticRule } from '../LinguisticRule';
 import { LinguisticVariable } from '../LinguisticVariable';
 
@@ -5,35 +7,59 @@ export const mamdaniInference = (
   inputs: LinguisticVariable[],
   outputs: LinguisticVariable[],
   rules: LinguisticRule[],
-  args: Record<string, number>
+  args: Record<string, number>,
+  defuzzicationMethod: DefuzzicationType
 ): number => {
-  console.log(args);
-  console.log(rules[0]);
+  // Create an indexed object for all the inputs and outputs
+  const variables: Record<string, { [key: string]: FuzzySet }> = [...inputs, ...outputs].reduce(
+    (acc, variable) => {
+      return {
+        ...acc,
+        [variable.name]: variable.indexedFuzzySets,
+      };
+    },
+    {}
+  );
 
-  // or is max
+  const outputSets = rules.map((rule) => {
+    // Get all membership values for the antecedents
+    const inputMembershipValues: number[] = rule.antecedents.map(({ linguisticVariable, fuzzySet }) => {
+      const value = variables[linguisticVariable][fuzzySet].getMembership(args[linguisticVariable]);
+      if (value === undefined) {
+        throw new Error(`Unable to find variable ${linguisticVariable} with set ${fuzzySet}`);
+      }
+      return value;
+    });
 
-  const height = inputs.find((input) => input.name === 'Height');
-  const age = inputs.find((input) => input.name === 'Age');
-  const employ = outputs.find((input) => input.name === 'Employ');
+    // Use the operator (AND => Min, OR => Max) to get a single value
+    const singleInputValue =
+      rule.operator === 'AND' ? Math.min(...inputMembershipValues) : Math.max(...inputMembershipValues);
 
-  const mu_young = age?.indexedFuzzySets['young'].getMembership(args['age']);
-  const mu_tall = height?.indexedFuzzySets['tall'].getMembership(args['height']);
-
-  console.log(mu_young, mu_tall);
-
-  const membership_1 =
-    rules[0].operator === 'AND' ? Math.min(mu_young!, mu_tall!) : Math.max(mu_young!, mu_tall!);
-  console.log(membership_1);
-
-  // Create output comparison with value
-  const output_set_1 = employ?.getSet('good').values.map(({ value, membership }) => {
-    return {
-      value,
-      membership: Math.min(membership_1, membership),
-    };
+    // Create a new FuzzyValue[] that uses the minimum value from the singleInputValue or
+    // the membership of each xValue in the output set
+    return variables[rule.consequent.linguisticVariable][rule.consequent.fuzzySet].values.map(
+      ({ value, membership }) => {
+        return {
+          value,
+          membership: Math.min(singleInputValue, membership),
+        };
+      }
+    );
   });
 
-  console.log(output_set_1);
+  // Combine all the output sets into a single set
+  const singleOutputSet = combineSetsWithMaximum(outputSets);
+  return defuzzify(defuzzicationMethod, singleOutputSet);
+};
 
-  return 0;
+export const combineSetsWithMaximum = (sets: FuzzyValue[][]): FuzzyValue[] => {
+  const firstSet = sets[0];
+  const minimumOfSets = firstSet.map(({ value }, i) => {
+    const membershipForAllSets = sets.map((set) => set[i].membership);
+    return {
+      value,
+      membership: Math.max(...membershipForAllSets),
+    };
+  });
+  return minimumOfSets;
 };
