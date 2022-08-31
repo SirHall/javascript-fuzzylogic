@@ -1,6 +1,6 @@
-import { employmentExample } from '../tipperExample';
+import { tipper } from '../tipperExample';
 import { combineSetsWithMaximum, mamdaniInference } from './utils';
-import { DefuzzicationType } from '..';
+import { DefuzzicationType, FuzzySet, MembershipFunctionType } from '..';
 
 describe('combineSetsWithMaximum', () => {
   it('should combine a single set', () => {
@@ -48,57 +48,72 @@ describe('combineSetsWithMaximum', () => {
 });
 
 describe('mamdaniInference', () => {
-  it('should return a single crisp value for a given fuzzy inference system', () => {
-    expect(
+  it('should throw an error if the arguments do not match the variables', () => {
+    expect(() =>
       mamdaniInference(
-        employmentExample.inputs,
-        employmentExample.outputs,
-        employmentExample.rules,
+        tipper.inputs,
+        tipper.outputs,
+        tipper.rules,
         {
-          height: 180,
-          age: 40,
+          service: 5,
+          food: 5,
         },
         DefuzzicationType.SmallestOfMaxima
       )
-    ).toBe(4);
+    ).toThrowError('Argument service does not relate to any variable in the system');
+  });
+
+  it('should return a single crisp value for a given fuzzy inference system', () => {
+    expect(
+      mamdaniInference(
+        tipper.inputs,
+        tipper.outputs,
+        tipper.rules,
+        {
+          Service: 8,
+          Food: 3,
+        },
+        DefuzzicationType.SmallestOfMaxima
+      )
+    ).toBe(22.5);
 
     expect(
       mamdaniInference(
-        employmentExample.inputs,
-        employmentExample.outputs,
-        employmentExample.rules,
+        tipper.inputs,
+        tipper.outputs,
+        tipper.rules,
         {
-          height: 180,
-          age: 40,
+          Service: 8,
+          Food: 3,
         },
         DefuzzicationType.LargestOfMaxima
       )
-    ).toBe(6);
+    ).toBe(27.5);
 
     expect(
       mamdaniInference(
-        employmentExample.inputs,
-        employmentExample.outputs,
-        employmentExample.rules,
+        tipper.inputs,
+        tipper.outputs,
+        tipper.rules,
         {
-          height: 180,
-          age: 40,
+          Service: 8,
+          Food: 3,
         },
         DefuzzicationType.MeanOfMaxima
       )
-    ).toBe(5);
+    ).toBe(25);
 
     expect(
       mamdaniInference(
-        employmentExample.inputs,
-        employmentExample.outputs,
-        employmentExample.rules,
+        tipper.inputs,
+        tipper.outputs,
+        tipper.rules,
         {
-          height: 180,
-          age: 40,
+          Service: 8,
+          Food: 3,
         },
         DefuzzicationType.Centroid
       )
-    ).toBe(6);
+    ).toBe(22.228483184636442);
   });
 });

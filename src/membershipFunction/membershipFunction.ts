@@ -61,14 +61,13 @@ export const trapezoidalMembershipFunction = (
   xValue: number,
   { bottomLeft, topLeft, topRight, bottomRight }: TrapezoidalMembershipFunctionParams
 ): number => {
-  return Math.max(
-    Math.min(
-      (xValue - bottomLeft) / (topLeft - bottomLeft),
-      1,
-      (bottomRight - xValue) / (bottomRight - topRight)
-    ),
-    0
-  );
+  const values = [
+    (xValue - bottomLeft) / (topLeft - bottomLeft),
+    1,
+    (bottomRight - xValue) / (bottomRight - topRight),
+  ].filter((value) => !isNaN(value));
+
+  return Math.max(Math.min(...values), 0);
 };
 
 /*

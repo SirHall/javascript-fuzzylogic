@@ -21,12 +21,25 @@ export const mamdaniInference = (
     {}
   );
 
+  // Check all args have corresponding variables
+  Object.keys(args).forEach((variableName) => {
+    if (variables[variableName] === undefined) {
+      throw new Error(`Argument ${variableName} does not relate to any variable in the system`);
+    }
+  });
+
   const outputSets = rules.map((rule) => {
     // Get all membership values for the antecedents
     const inputMembershipValues: number[] = rule.antecedents.map(({ linguisticVariable, fuzzySet }) => {
-      const value = variables[linguisticVariable][fuzzySet].getMembership(args[linguisticVariable]);
-      if (value === undefined) {
+      const variable = variables[linguisticVariable][fuzzySet];
+      if (variable === undefined) {
         throw new Error(`Unable to find variable ${linguisticVariable} with set ${fuzzySet}`);
+      }
+      const value = variable.getMembership(args[linguisticVariable]);
+      if (value === undefined) {
+        throw new Error(
+          `Unable to get find get membership for arg ${linguisticVariable} from ${linguisticVariable} with set ${fuzzySet}`
+        );
       }
       return value;
     });
