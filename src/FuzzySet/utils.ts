@@ -141,3 +141,9 @@ export const getPlottableValues = (set: FuzzySet): { xValues: number[]; membersh
       membershipValues: [],
     }
   );
+
+/**
+ * For a given x value, find the membership value it possesses
+ */
+export const getMembershipValue = (set: FuzzySet, xValue: number) =>
+  set.values.find(({ value }) => value === xValue)?.membership;

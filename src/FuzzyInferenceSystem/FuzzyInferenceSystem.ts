@@ -1,5 +1,6 @@
 import { LinguisticVariable } from '../index';
-import { Antecedent, Consequent, LinguisticRule, LinguisticRuleOperator } from '../LinguisticRule';
+import { LinguisticRule, LinguisticRuleOperator } from '../LinguisticRule';
+import { mamdaniInference } from './utils';
 
 export class FuzzyInferenceSystem {
   name: string;
@@ -27,23 +28,31 @@ export class FuzzyInferenceSystem {
 
   addOutput = (variable: LinguisticVariable) => this.addVariable(variable, 'Output');
 
-  addRule = (operator: LinguisticRuleOperator, antecedents: string[][], consequent: string[]) => {
+  addRule = (rule: string) => {
+    const operator = rule.match('AND') ? 'AND' : 'OR';
+    const parts = rule.split(/IF|IS|THEN|AND|OR| /).filter(Boolean);
+
+    if (parts.length % 2 !== 0) {
+      throw new Error('Rule string is malformed');
+    }
+
+    const antecedents: string[][] = [];
+    const consequent: string[] = [];
+    for (let i = 0; i < parts.length; i += 2) {
+      if (i === parts.length - 2) {
+        consequent.push(parts[i]);
+        consequent.push(parts[i + 1]);
+      } else {
+        antecedents.push([parts[i], parts[i + 1]]);
+      }
+    }
+
     if (antecedents.length === 0) {
       throw new Error('No antecedents (inputs) specified');
     }
 
-    if (antecedents.flat().length % 2 !== 0) {
-      throw new Error(
-        'All antecedents should have two parts: a linguistic variable name, and a fuzzy set name'
-      );
-    }
-
     if (consequent.length === 0) {
       throw new Error('No consequent (output) specified');
-    }
-
-    if (consequent.length !== 2) {
-      throw new Error('A consequent should have two parts: a linguistic variable name, and a fuzzy set name');
     }
 
     try {
@@ -52,7 +61,7 @@ export class FuzzyInferenceSystem {
       throw new Error(message as string);
     }
 
-    const rule = new LinguisticRule(
+    const linguisticRule = new LinguisticRule(
       operator,
       antecedents.map((antecedentParts) => ({
         linguisticVariable: antecedentParts[0],
@@ -64,7 +73,7 @@ export class FuzzyInferenceSystem {
       }
     );
 
-    this.rules.push(rule);
+    this.rules.push(linguisticRule);
     return this;
   };
 
@@ -85,5 +94,29 @@ export class FuzzyInferenceSystem {
     if (!consequentExists) {
       throw new Error('Consequent cannot be created (set or variable do not exist)');
     }
+  };
+
+  solve = (type: 'Mamdani', args: Record<string, number>): number => {
+    const allInputsHaveArg = this.inputs.every((input) => args[input.name] !== undefined);
+    if (!allInputsHaveArg) {
+      throw new Error('Not all input variables have an argument provided');
+    }
+
+    if (this.inputs.length === 0) {
+      throw new Error('Cannot solve: No inputs defined');
+    }
+
+    if (this.outputs.length === 0) {
+      throw new Error('Cannot solve: No outputs defined');
+    }
+
+    if (this.rules.length === 0) {
+      throw new Error('Cannot solve: No rules defined');
+    }
+
+    if (type === 'Mamdani') {
+      return mamdaniInference(this.inputs, this.outputs, this.rules, args);
+    }
+    return 0;
   };
 }

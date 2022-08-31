@@ -3,6 +3,7 @@ import {
   FuzzyValue,
   alphacut,
   complement,
+  getMembershipValue,
   height,
   intersection,
   isNormal,
@@ -300,5 +301,17 @@ describe('getPlottableValues', () => {
       membershipValues: [0, 0.1, 0.7, 0.6, 0.7, 0.4, 0.1],
       xValues: [1, 2, 3, 4, 5, 6, 7],
     });
+  });
+});
+
+describe('getMembershipValue', () => {
+  it('should return the undefined if the xValue does not exist', () => {
+    expect(getMembershipValue(setWithNoValues, 1)).toBe(undefined);
+    expect(setWithNoValues.getMembership(1)).toBe(undefined);
+  });
+
+  it('should return the membership value if that xValue exists', () => {
+    expect(getMembershipValue(setWithValues, 1)).toBe(0);
+    expect(setWithValues.getMembership(1)).toBe(0);
   });
 });

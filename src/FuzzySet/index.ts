@@ -9,4 +9,5 @@ export {
   intersection,
   union,
   getPlottableValues,
+  getMembershipValue,
 } from './utils';

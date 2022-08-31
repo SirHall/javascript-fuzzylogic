@@ -10,6 +10,7 @@ import {
   FuzzyValue,
   alphacut,
   complement,
+  getMembershipValue,
   getPlottableValues,
   height,
   intersection,
@@ -53,4 +54,6 @@ export class FuzzySet {
   defuzzify = (type: DefuzzicationType): number => defuzzify(type, this.values);
 
   getPlottableValues = () => getPlottableValues(this);
+
+  getMembership = (xValue: number) => getMembershipValue(this, xValue);
 }
