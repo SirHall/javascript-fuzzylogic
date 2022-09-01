@@ -92,12 +92,12 @@ const generousTipMf = new FuzzySet('Generous').generateMembershipValues({
   },
 });
 
-const serviceVariable = new LinguisticVariable('Service')
+export const serviceVariable = new LinguisticVariable('Service')
   .addSet(poorServiceMf)
   .addSet(goodServiceMf)
   .addSet(excellentServiceMf);
-const foodVariable = new LinguisticVariable('Food').addSet(rancidFoodMf).addSet(deliciousFoodMf);
-const tipVariable = new LinguisticVariable('Tip')
+export const foodVariable = new LinguisticVariable('Food').addSet(rancidFoodMf).addSet(deliciousFoodMf);
+export const tipVariable = new LinguisticVariable('Tip')
   .addSet(cheapTipMf)
   .addSet(averageTipMf)
   .addSet(generousTipMf);

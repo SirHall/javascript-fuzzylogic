@@ -93,7 +93,9 @@ export class FuzzyInferenceSystem {
       this.outputs.find((output) => consequent[0] === output.name)?.indexedFuzzySets[consequent[1]] !==
       undefined;
     if (!consequentExists) {
-      throw new Error('Consequent cannot be created (set or variable do not exist)');
+      throw new Error(
+        `Consequent cannot be created (variable ${consequent[0]} or set ${consequent[1]} do not exist)`
+      );
     }
   };
 
