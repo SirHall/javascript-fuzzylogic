@@ -362,6 +362,12 @@ describe('triangularMembershipFunction', () => {
     expect(triangularMembershipFunction(90, parameters)).toBe(0);
     expect(triangularMembershipFunction(100, parameters)).toBe(0);
   });
+
+  it('should return a value even if two parameters are the same', () => {
+    const parameters = { left: 0, center: 0, right: 80 };
+    expect(triangularMembershipFunction(0, parameters)).toBe(1);
+    expect(triangularMembershipFunction(80, parameters)).toBe(0);
+  });
 });
 
 describe('trapezoidalMembershipFunction', () => {
@@ -378,6 +384,12 @@ describe('trapezoidalMembershipFunction', () => {
     expect(trapezoidalMembershipFunction(80, parameters)).toBe(0.42857142857142855);
     expect(trapezoidalMembershipFunction(90, parameters)).toBe(0.14285714285714285);
     expect(trapezoidalMembershipFunction(100, parameters)).toBe(0);
+  });
+
+  it('should return a value even if two parameters are the same', () => {
+    const parameters = { bottomLeft: 0, topLeft: 0, topRight: 60, bottomRight: 60 };
+    expect(trapezoidalMembershipFunction(0, parameters)).toBe(1);
+    expect(trapezoidalMembershipFunction(60, parameters)).toBe(1);
   });
 });
 

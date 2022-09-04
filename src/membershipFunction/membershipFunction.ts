@@ -50,7 +50,12 @@ export function generateMembershipValues<T extends keyof MembershipFunctionParam
 export const triangularMembershipFunction = (
   xValue: number,
   { left, center, right }: TriangularMembershipFunctionParams
-): number => Math.max(Math.min((xValue - left) / (center - left), (right - xValue) / (right - center)), 0);
+): number => {
+  const values = [(xValue - left) / (center - left), (right - xValue) / (right - center)].filter(
+    (value) => !isNaN(value)
+  );
+  return Math.max(Math.min(...values), 0);
+};
 
 /**
  * Generates a trapezoidal shape.
