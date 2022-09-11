@@ -35,6 +35,23 @@ describe('FuzzyInferenceSystem', () => {
     expect(tipper.outputs).toHaveLength(1);
   });
 
+  it('should throw an error if two variables with the same names are attempted to be added', () => {
+    const tipper = new FuzzyInferenceSystem('Tipper').addInput(serviceVariable).addOutput(tipVariable);
+    expect(() => tipper.addInput(serviceVariable)).toThrowError('An input with that name already exists');
+  });
+
+  it('should be able to remove variables', () => {
+    const tipper = new FuzzyInferenceSystem('Tipper')
+      .addInput(serviceVariable)
+      .addInput(foodVariable)
+      .addOutput(tipVariable);
+    expect(tipper.inputs.length).toBe(2);
+
+    tipper.removeInput('Service');
+    expect(tipper.inputs.length).toBe(1);
+    expect(tipper.inputs[0].name).toBe('Food');
+  });
+
   it('should be able to add a rule', () => {
     const tipper = new FuzzyInferenceSystem('Tipper').addInput(serviceVariable).addOutput(tipVariable);
     tipper.addRule('IF Service IS Good THEN Tip IS Average');

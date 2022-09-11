@@ -24,6 +24,17 @@ const goodService = new FuzzySet('Good').generateMembershipValues({
   },
 });
 
+const greatService = new FuzzySet('Great').generateMembershipValues({
+  type: MembershipFunctionType.Gaussian,
+  parameters: {
+    center: 10,
+    standardDeviation: 1.5,
+    minValue: 0,
+    maxValue: 10,
+    step: 0.5,
+  },
+});
+
 describe('LinguisticVariable', () => {
   it('should able to be created with no sets', () => {
     const service = new LinguisticVariable('Service');
@@ -64,5 +75,55 @@ describe('LinguisticVariable', () => {
   it('should error if two sets with the same name are added', () => {
     const service = new LinguisticVariable('Service').addSet(poorService);
     expect(() => service.addSet(poorService)).toThrowError('A set with that name already exists');
+  });
+
+  it('should allow for removal of sets', () => {
+    const service = new LinguisticVariable('Service').addSet(poorService).addSet(goodService);
+    expect(service.fuzzySets).toHaveLength(2);
+
+    service.removeSet('Poor');
+    expect(service.fuzzySets).toHaveLength(1);
+    expect(service.fuzzySets[0].name).toBe('Good');
+  });
+
+  it('should allow editing of sets', () => {
+    const service = new LinguisticVariable('Service')
+      .addSet(poorService)
+      .addSet(goodService)
+      .addSet(greatService);
+
+    const good = service.fuzzySets[1];
+    expect(good.name).toBe('Good');
+    expect(good.initialisationParameters).toStrictEqual({
+      center: 5,
+      standardDeviation: 1.5,
+      minValue: 0,
+      maxValue: 10,
+      step: 0.5,
+    });
+
+    service.editSet(
+      'Good',
+      new FuzzySet('Good (editted)').generateMembershipValues({
+        type: MembershipFunctionType.Gaussian,
+        parameters: {
+          center: 10,
+          standardDeviation: 1.5,
+          minValue: 0,
+          maxValue: 10,
+          step: 0.5,
+        },
+      })
+    );
+    console.log(service.fuzzySets[1]);
+    const goodEditted = service.fuzzySets[1];
+    expect(goodEditted.name).toBe('Good (editted)');
+    expect(goodEditted.initialisationParameters).toStrictEqual({
+      center: 10,
+      standardDeviation: 1.5,
+      minValue: 0,
+      maxValue: 10,
+      step: 0.5,
+    });
   });
 });

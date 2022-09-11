@@ -25,9 +25,36 @@ export class FuzzyInferenceSystem {
     return this;
   };
 
-  addInput = (variable: LinguisticVariable) => this.addVariable(variable, 'Input');
+  removeVariable = (name: string, type: 'Input' | 'Output') => {
+    if (type === 'Input') {
+      this.inputs = this.inputs.filter((variable) => variable.name !== name);
+    } else {
+      this.outputs = this.outputs.filter((variable) => variable.name !== name);
+    }
+    return this;
+  };
 
-  addOutput = (variable: LinguisticVariable) => this.addVariable(variable, 'Output');
+  removeInput = (name: string) => {
+    return this.removeVariable(name, 'Input');
+  };
+
+  removeOutput = (name: string) => {
+    return this.removeVariable(name, 'Output');
+  };
+
+  addInput = (newVariable: LinguisticVariable) => {
+    if (this.inputs.find((variable) => variable.name === newVariable.name)) {
+      throw new Error('An input with that name already exists');
+    }
+    return this.addVariable(newVariable, 'Input');
+  };
+
+  addOutput = (newVariable: LinguisticVariable) => {
+    if (this.outputs.find((variable) => variable.name === newVariable.name)) {
+      throw new Error('An output with that name already exists');
+    }
+    return this.addVariable(newVariable, 'Output');
+  };
 
   addRule = (rule: string) => {
     const operator = rule.match('AND') ? 'AND' : 'OR';
