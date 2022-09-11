@@ -115,7 +115,7 @@ describe('LinguisticVariable', () => {
         },
       })
     );
-    console.log(service.fuzzySets[1]);
+
     const goodEditted = service.fuzzySets[1];
     expect(goodEditted.name).toBe('Good (editted)');
     expect(goodEditted.initialisationParameters).toStrictEqual({
