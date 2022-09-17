@@ -1,6 +1,7 @@
 import { DefuzzicationType } from '../defuzzify';
 import { LinguisticVariable } from '../index';
-import { LinguisticRule, LinguisticRuleOperator } from '../LinguisticRule';
+import { LinguisticRule } from '../LinguisticRule';
+import { EditLinguisticVariableArgs, VariableType } from './types';
 import { mamdaniInference } from './utils';
 
 export class FuzzyInferenceSystem {
@@ -16,7 +17,7 @@ export class FuzzyInferenceSystem {
     this.rules = [];
   }
 
-  addVariable = (variable: LinguisticVariable, type: 'Input' | 'Output') => {
+  addVariable = (variable: LinguisticVariable, type: VariableType) => {
     if (type === 'Input') {
       this.inputs.push(variable);
     } else {
@@ -25,7 +26,7 @@ export class FuzzyInferenceSystem {
     return this;
   };
 
-  removeVariable = (name: string, type: 'Input' | 'Output') => {
+  removeVariable = (name: string, type: VariableType) => {
     if (type === 'Input') {
       this.inputs = this.inputs.filter((variable) => variable.name !== name);
     } else {
@@ -35,25 +36,76 @@ export class FuzzyInferenceSystem {
   };
 
   removeInput = (name: string) => {
-    return this.removeVariable(name, 'Input');
+    return this.removeVariable(name, VariableType.Input);
   };
 
   removeOutput = (name: string) => {
-    return this.removeVariable(name, 'Output');
+    return this.removeVariable(name, VariableType.Output);
+  };
+
+  editVariable = (
+    name: string,
+    { name: newName, fuzzySets }: EditLinguisticVariableArgs,
+    type: VariableType
+  ) => {
+    let oldVariableIndex: number;
+    let oldVariable: LinguisticVariable;
+
+    if (type === VariableType.Input) {
+      oldVariableIndex = this.inputs.findIndex((variable) => variable.name === name);
+      oldVariable = this.inputs[oldVariableIndex];
+    } else {
+      oldVariableIndex = this.outputs.findIndex((variable) => variable.name === name);
+      oldVariable = this.outputs[oldVariableIndex];
+    }
+
+    const newVariableName = newName ? newName : name;
+    const newVariableSets = fuzzySets ? fuzzySets : oldVariable?.fuzzySets || [];
+    const newVariable = new LinguisticVariable(newVariableName, newVariableSets);
+
+    if (type === VariableType.Input) {
+      this.inputs = [
+        ...this.inputs.slice(0, oldVariableIndex),
+        newVariable,
+        ...this.inputs.slice(oldVariableIndex + 1, this.inputs.length),
+      ];
+    } else {
+      this.outputs = [
+        ...this.outputs.slice(0, oldVariableIndex),
+        newVariable,
+        ...this.outputs.slice(oldVariableIndex + 1, this.outputs.length),
+      ];
+    }
+
+    return this;
+  };
+
+  editInput = (name: string, { name: newName, fuzzySets }: EditLinguisticVariableArgs) => {
+    if (newName && newName !== name && this.inputs.find((variable) => variable.name === newName)) {
+      throw new Error('An input with that name already exists');
+    }
+    return this.editVariable(name, { name: newName, fuzzySets }, VariableType.Input);
+  };
+
+  editOutput = (name: string, { name: newName, fuzzySets }: EditLinguisticVariableArgs) => {
+    if (newName && newName !== name && this.inputs.find((variable) => variable.name === newName)) {
+      throw new Error('An output with that name already exists');
+    }
+    return this.editVariable(name, { name: newName, fuzzySets }, VariableType.Output);
   };
 
   addInput = (newVariable: LinguisticVariable) => {
     if (this.inputs.find((variable) => variable.name === newVariable.name)) {
       throw new Error('An input with that name already exists');
     }
-    return this.addVariable(newVariable, 'Input');
+    return this.addVariable(newVariable, VariableType.Input);
   };
 
   addOutput = (newVariable: LinguisticVariable) => {
     if (this.outputs.find((variable) => variable.name === newVariable.name)) {
       throw new Error('An output with that name already exists');
     }
-    return this.addVariable(newVariable, 'Output');
+    return this.addVariable(newVariable, VariableType.Output);
   };
 
   addRule = (rule: string) => {

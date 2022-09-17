@@ -1,4 +1,4 @@
-import { DefuzzicationType } from '../index';
+import { DefuzzicationType, FuzzySet } from '../index';
 import { foodVariable, serviceVariable, tipVariable } from '../tipperExample';
 import { FuzzyInferenceSystem } from './FuzzyInferenceSystem';
 
@@ -50,6 +50,34 @@ describe('FuzzyInferenceSystem', () => {
     tipper.removeInput('Service');
     expect(tipper.inputs.length).toBe(1);
     expect(tipper.inputs[0].name).toBe('Food');
+  });
+
+  it('should be able to edit variables', () => {
+    const tipper = new FuzzyInferenceSystem('Tipper')
+      .addInput(serviceVariable)
+      .addInput(foodVariable)
+      .addOutput(tipVariable);
+    expect(tipper.inputs.length).toBe(2);
+    expect(tipper.inputs[1].name).toBe('Food');
+    expect(tipper.inputs[1].fuzzySets[0].name).toBe('Rancid');
+    expect(tipper.inputs[1].fuzzySets.length).toBe(2);
+
+    tipper.editInput('Food', { name: 'Flood', fuzzySets: [new FuzzySet('Flancid')] });
+
+    expect(tipper.inputs[1].name).toBe('Flood');
+    expect(tipper.inputs[1].fuzzySets[0].name).toBe('Flancid');
+    expect(tipper.inputs[1].fuzzySets.length).toBe(1);
+  });
+
+  it('should throw an error if an editted variable has a name the same as another variable (except the source)', () => {
+    const tipper = new FuzzyInferenceSystem('Tipper')
+      .addInput(serviceVariable)
+      .addInput(foodVariable)
+      .addOutput(tipVariable);
+
+    expect(() => tipper.editInput('Food', { name: 'Service' })).toThrowError(
+      'An input with that name already exists'
+    );
   });
 
   it('should be able to add a rule', () => {
